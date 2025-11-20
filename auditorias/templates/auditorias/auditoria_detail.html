@@ -1,0 +1,63 @@
+{% extends 'auditorias/base.html' %}
+
+{% block content %}
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h3>Detalle de Auditoría: {{ auditoria.proceso.nombre }}</h3>
+        <a href="{% url 'dashboard' %}" style="text-decoration: none; color: var(--accent-color);">Volver al
+            Dashboard</a>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+        <div>
+            <p><strong>Fecha Programada:</strong> {{ auditoria.fecha_programada }}</p>
+            <p><strong>Auditor Líder:</strong> {{ auditoria.auditor_lider }}</p>
+            <p><strong>Estado:</strong> <span class="status-badge status-{{ auditoria.estado }}">{{
+                    auditoria.get_estado_display }}</span> <a href="{% url 'editar_auditoria' auditoria.pk %}"
+                    style="font-size: 0.8rem; margin-left: 10px; color: var(--secondary-color);">[Editar]</a></p>
+        </div>
+        <div>
+            <p><strong>Plan:</strong> {{ auditoria.plan.titulo }}</p>
+            <p><strong>Normas:</strong>
+                {% for norma in auditoria.normas.all %}
+                {{ norma.codigo }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+        </div>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h4 style="margin: 0; color: var(--secondary-color);">Hallazgos Registrados</h4>
+        <a href="{% url 'reportar_hallazgo' auditoria.pk %}"
+            style="background-color: var(--accent-color); color: white; text-decoration: none; padding: 8px 15px; border-radius: 5px; font-size: 0.9rem;">+
+            Agregar Hallazgo</a>
+    </div>
+
+    {% if auditoria.hallazgos.all %}
+    <table>
+        <thead>
+            <tr>
+                <th>Tipo</th>
+                <th>Norma</th>
+                <th>Descripción</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for hallazgo in auditoria.hallazgos.all %}
+            <tr>
+                <td>{{ hallazgo.get_tipo_display }}</td>
+                <td>{{ hallazgo.norma_relacionada.codigo|default:"-" }}</td>
+                <td>{{ hallazgo.descripcion|truncatechars:50 }}</td>
+                <td>{{ hallazgo.fecha_reporte|date:"d/m/Y H:i" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">No se han registrado hallazgos en esta auditoría.</div>
+    {% endif %}
+</div>
+{% endblock %}

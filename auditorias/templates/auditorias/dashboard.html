@@ -1,0 +1,93 @@
+{% extends 'auditorias/base.html' %}
+
+{% block content %}
+<header>
+    <h1>Panel de Control de Auditoría</h1>
+    <p>Bienvenido al sistema de gestión de calidad para software.</p>
+    <a href="{% url 'crear_auditoria' %}"
+        style="background-color: var(--accent-color); color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px; float: right; margin-top: -50px;">Nueva
+        Auditoría</a>
+</header>
+
+<!-- Metrics Row -->
+<div class="dashboard-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 30px;">
+    <div class="card" style="text-align: center; padding: 15px;">
+        <h4 style="margin: 0; color: #7f8c8d;">Total Auditorías</h4>
+        <p style="font-size: 2rem; margin: 10px 0; font-weight: bold; color: var(--primary-color);">{{ total_auditorias
+            }}</p>
+    </div>
+    <div class="card" style="text-align: center; padding: 15px;">
+        <h4 style="margin: 0; color: #7f8c8d;">Programadas</h4>
+        <p style="font-size: 2rem; margin: 10px 0; font-weight: bold; color: #3498db;">{{ auditorias_programadas }}</p>
+    </div>
+    <div class="card" style="text-align: center; padding: 15px;">
+        <h4 style="margin: 0; color: #7f8c8d;">Total Hallazgos</h4>
+        <p style="font-size: 2rem; margin: 10px 0; font-weight: bold; color: var(--primary-color);">{{ total_hallazgos
+            }}</p>
+    </div>
+    <div class="card" style="text-align: center; padding: 15px;">
+        <h4 style="margin: 0; color: #7f8c8d;">NC Mayores</h4>
+        <p style="font-size: 2rem; margin: 10px 0; font-weight: bold; color: #e74c3c;">{{ nc_mayores }}</p>
+    </div>
+</div>
+
+<div class="dashboard-grid">
+    <!-- Próximas Auditorías -->
+    <div class="card">
+        <h3>Próximas Auditorías</h3>
+        {% if auditorias %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Proceso</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for auditoria in auditorias %}
+                <tr>
+                    <td>{{ auditoria.proceso.nombre }}</td>
+                    <td>{{ auditoria.fecha_programada }}</td>
+                    <td><span class="status-badge status-{{ auditoria.estado }}">{{ auditoria.get_estado_display
+                            }}</span></td>
+                    <td><a href="{% url 'detalle_auditoria' auditoria.pk %}"
+                            style="color: var(--accent-color); text-decoration: none;">Ver</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">No hay auditorías programadas próximamente.</div>
+        {% endif %}
+    </div>
+
+    <!-- Hallazgos Recientes -->
+    <div class="card">
+        <h3>Hallazgos Recientes</h3>
+        {% if hallazgos %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Auditoría</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for hallazgo in hallazgos %}
+                <tr>
+                    <td>{{ hallazgo.get_tipo_display }}</td>
+                    <td>{{ hallazgo.auditoria.proceso.nombre }}</td>
+                    <td>{{ hallazgo.fecha_reporte|date:"d/m/Y" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">No se han registrado hallazgos recientes.</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

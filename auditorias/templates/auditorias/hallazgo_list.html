@@ -1,0 +1,41 @@
+{% extends 'auditorias/base.html' %}
+
+{% block content %}
+<div class="card">
+    <h3>Todos los Hallazgos</h3>
+
+    {% if hallazgos %}
+    <table>
+        <thead>
+            <tr>
+                <th>Tipo</th>
+                <th>Auditoría</th>
+                <th>Norma</th>
+                <th>Descripción</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for hallazgo in hallazgos %}
+            <tr>
+                <td>{{ hallazgo.get_tipo_display }}</td>
+                <td><a href="{% url 'detalle_auditoria' hallazgo.auditoria.pk %}"
+                        style="text-decoration: none; color: var(--text-color);">{{ hallazgo.auditoria.proceso.nombre
+                        }}</a></td>
+                <td>{{ hallazgo.norma_relacionada.codigo|default:"-" }}</td>
+                <td>{{ hallazgo.descripcion|truncatechars:50 }}</td>
+                <td>{{ hallazgo.fecha_reporte|date:"d/m/Y" }}</td>
+                <td>
+                    <a href="{% url 'editar_hallazgo' hallazgo.pk %}"
+                        style="color: var(--secondary-color); text-decoration: none;">Editar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">No hay hallazgos registrados.</div>
+    {% endif %}
+</div>
+{% endblock %}

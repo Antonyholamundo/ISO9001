@@ -1,0 +1,47 @@
+{% extends 'auditorias/base.html' %}
+
+{% block content %}
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3>Todas las Auditorías</h3>
+        <a href="{% url 'crear_auditoria' %}"
+            style="background-color: var(--accent-color); color: white; text-decoration: none; padding: 8px 15px; border-radius: 5px;">+
+            Nueva Auditoría</a>
+    </div>
+
+    {% if auditorias %}
+    <table>
+        <thead>
+            <tr>
+                <th>Proceso</th>
+                <th>Plan</th>
+                <th>Fecha Programada</th>
+                <th>Auditor Líder</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for auditoria in auditorias %}
+            <tr>
+                <td>{{ auditoria.proceso.nombre }}</td>
+                <td>{{ auditoria.plan.titulo }}</td>
+                <td>{{ auditoria.fecha_programada }}</td>
+                <td>{{ auditoria.auditor_lider }}</td>
+                <td><span class="status-badge status-{{ auditoria.estado }}">{{ auditoria.get_estado_display }}</span>
+                </td>
+                <td>
+                    <a href="{% url 'detalle_auditoria' auditoria.pk %}"
+                        style="color: var(--accent-color); text-decoration: none; margin-right: 10px;">Ver</a>
+                    <a href="{% url 'editar_auditoria' auditoria.pk %}"
+                        style="color: var(--secondary-color); text-decoration: none;">Editar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">No hay auditorías registradas.</div>
+    {% endif %}
+</div>
+{% endblock %}

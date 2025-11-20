@@ -1,0 +1,139 @@
+{% extends 'auditorias/base.html' %}
+
+{% block content %}
+<div class="card">
+    <h3>{% if titulo %}{{ titulo }}{% else %}Reportar Hallazgo{% endif %}</h3>
+    <p style="color: #7f8c8d; margin-bottom: 20px;">Auditoría: <strong>{{ auditoria.proceso.nombre }}</strong> ({{
+        auditoria.fecha_programada }})</p>
+
+    <form method="post" class="finding-form">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="id_tipo">Tipo de Hallazgo *</label>
+            {{ form.tipo }}
+            {% if form.tipo.errors %}
+            <span class="error">{{ form.tipo.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_norma_relacionada">Norma ISO 9001 Relacionada</label>
+            {{ form.norma_relacionada }}
+            {% if form.norma_relacionada.errors %}
+            <span class="error">{{ form.norma_relacionada.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_descripcion">Descripción del Hallazgo *</label>
+            {{ form.descripcion }}
+            {% if form.descripcion.errors %}
+            <span class="error">{{ form.descripcion.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_evidencia_objetiva">Evidencia Objetiva *</label>
+            {{ form.evidencia_objetiva }}
+            <small style="color: #7f8c8d; margin-top: 5px;">Describa la evidencia que respalda este hallazgo</small>
+            {% if form.evidencia_objetiva.errors %}
+            <span class="error">{{ form.evidencia_objetiva.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-danger">Registrar Hallazgo</button>
+            <a href="{% url 'detalle_auditoria' auditoria.pk %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<style>
+    .finding-form {
+        margin-top: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: var(--secondary-color);
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+    }
+
+    .form-group input[type="text"],
+    .form-group select,
+    .form-group textarea {
+        padding: 10px 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 1rem;
+        font-family: inherit;
+        transition: border-color 0.3s;
+    }
+
+    .form-group textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+    }
+
+    .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1rem;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s;
+    }
+
+    .btn-danger {
+        background-color: #e74c3c;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background-color: #c0392b;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-secondary {
+        background-color: #95a5a6;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background-color: #7f8c8d;
+    }
+
+    .error {
+        color: #e74c3c;
+        font-size: 0.85rem;
+        margin-top: 5px;
+    }
+</style>
+{% endblock %}
